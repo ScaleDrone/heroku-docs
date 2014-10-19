@@ -137,9 +137,9 @@ ScaleDrone uses the popular Perl regular expressions syntax used by most popular
     }
 }
 ```
-This allows the user to publish and subscribe to all rooms (regex: /.*/) besides 'main-room' (regex: /^main-room$"/).
+This allows the user to publish and subscribe to all rooms (regex: `/.*/`) besides 'main-room' (regex: `/^main-room$"/`).
 
-<div class="note note-warning">To match a room called 'main' the correct regex is '^main$' not 'main'.
+<div class="note note-warning">To match a room called 'main' the correct regex is `^main$` not `main`.
 Otherwise it will match any room that contains the string 'main'.
 </div>
 
