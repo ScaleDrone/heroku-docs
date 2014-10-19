@@ -62,14 +62,14 @@ URL:
 Data: {"hello": "from REST"}
 ```
 
-** Headers: **
+**Headers:**
 
 | Header        | Required | Value                        | Description |
 | ------------- |:--------:| ---------------------------- | ----------- |
 | Content-Type  | ✗        | application/json             | Set content type to JSON if you want to receive data as JavaScript objects |
 | Authorization | ✗ you can also make unauthorized request      | Bearer eyJ0eXAiOiJKV1QiLC... | Read about the Authorization header at the [authentication documentation](/docs/authentication) |
 
-** Response codes: **
+**Response codes:**
 
 | Code | Description |
 | ---- | ----------- |
@@ -123,7 +123,7 @@ JWT's payload uses the common 'ext' JWT claim and some ScaleDrone's specific cla
 The permissions claim is used to define which rooms the authenticated user can subscribe or publish to. It is possbile to define very detailed permission rules using [regular expressions](http://regexone.com/).
 ScaleDrone uses the popular Perl regular expressions syntax used by most popular programming languages.
 
-Example permissions:
+**Example permissions:**
 
 ```json
 "permissions": {
@@ -167,7 +167,7 @@ drone.on('authenticate', function (error) {
 
 REST requests are authenticated using a JSON Web Token set as a header's Bearer token: `Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...`
 
-** Example POST request: **
+**POST request structure:**
 ```curl
 POST
 
