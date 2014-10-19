@@ -7,16 +7,18 @@ To include the ScaleDrone client library in your website, add a script tag to th
 ```html
 <script type='text/javascript' src='https://api2.scaledrone.com/assets/scaledrone.min.js'></script>
 ```
-
-_Do not host this file yourself._
+>warning
+>Do not host this file yourself
 
 ## Variables
 
 Heroku gives you access to two variables:
+
 * `SCALEDRONE_CHANNEL_ID` - this is your channels public ID
 * `SCALEDRONE_CHANNEL_SECRET` - this is a secret key you use to create access tokens for clients and servers
 
 You can access them as environment variables from Heroku or from the Heroku toolbelt with:
+
 ```term
 $ heroku config:get SCALEDRONE_CHANNEL_ID
 $ heroku config:get SCALEDRONE_CHANNEL_SECRET
@@ -67,7 +69,7 @@ Data: {"hello": "from REST"}
 | Header        | Required | Value                        | Description |
 | ------------- |:--------:| ---------------------------- | ----------- |
 | Content-Type  | ✗        | application/json             | Set content type to JSON if you want to receive data as JavaScript objects |
-| Authorization | ✗ you can also make unauthorized request      | Bearer eyJ0eXAiOiJKV1QiLC... | Read about the Authorization header at the [authentication documentation](/docs/authentication) |
+| Authorization | ✗ you can also make unauthorized request      | Bearer eyJ0eXAiOiJKV1QiLC... | Read about the Authorization header at the [authentication documentation](#rest-authentication) |
 
 **Response codes:**
 
@@ -76,21 +78,22 @@ Data: {"hello": "from REST"}
 | 200  | Everything went OK, the message was published |
 | 400+ | Error, response message gives a more detailed error message |
 
-# Authentication
+## Authentication
 
 Both JavaScript and REST connections can be authenticated using [JSON Web Tokens](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html) (JWT). The token is encoded using your channel's secret.
 There are JWT libraries for most programming languages and it is relatively easy to implement yourself.
 
-## JSON Web Token
+### JSON Web Token
 
-### JWT Header
+#### JWT Header
 [JSON Web Tokens](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html) (JWT) has to be encoded with HMAC using SHA-256 (HS256). The decoded header always looks like this:
-```
-{"alg": "HS256", "typ": "JWT"}
 
+```json
+{"alg": "HS256", "typ": "JWT"}
 ```
-### JWT Payload
+#### JWT Payload
 JWT's payload uses the common 'ext' JWT claim and some ScaleDrone's specific claims. An example decoded JWT payload looks like this:
+
 ```json
 {
     "client": "CLIENT_CONNECTION_ID",
@@ -168,7 +171,8 @@ drone.on('authenticate', function (error) {
 REST requests are authenticated using a JSON Web Token set as a header's Bearer token: `Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...`
 
 **POST request structure:**
-```curl
+
+```
 POST
 
 URL:
@@ -179,13 +183,14 @@ Headers:
     Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjaGFubmVsIjaibTdMWGVXVWlnN1FtWE1xVyIsInB1Ymxpc2giOnRydWUsImV4cCI6MjgxNjQwMzkxMzI2MH0.LKkmfbbwSol-veSanJaIOEI1trlDU9LbfrOHuAEb0Vo
 ```
 
-_Don't set a client claim for REST API's JWT._
+>warning
+>Don't set a client claim for REST API's JWT
 
-# Read more
+## Read more
 
 You can find more documentation and tutorials at [ScaleDrone's documentation](https://www.scaledrone.com/docs).
 
-# Examples
+## Examples
 
 * [HTML5 Desktop Notifications](https://github.com/ScaleDrone/html5-javascript-push-notifications)
 * [cURL Push](http://runnable.com/VCuSWvXxNucz1na6/scaledrone-curl-push-example-for-shell-and-bash)
