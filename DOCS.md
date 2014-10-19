@@ -59,7 +59,8 @@ The REST API lets you push data to rooms as HTTPS POST requests.
 ```POST
 URL:
   https://api2.scaledrone.com/[channel_id]/[room_name]/publish
-Data: {"hello": "from REST"}```
+Data: {"hello": "from REST"}
+```
 
 ** Headers: **
 
