@@ -1,6 +1,53 @@
-[ScaleDrone](http://addons.heroku.com/scaledrone) is the easiest way of adding real-time capabilities to your app. You can also sign up and use the service from [www.scaledrone.com](https://www.scaledrone.com).
+[ScaleDrone](http://addons.heroku.com/scaledrone) is the easiest way of adding real-time pushing capabilities to your app. ScaleDrone offers JavaScript and REST clients, so it doesn't matter which language your app uses.
 
-# Getting started
+You can also sign up and use the service from [www.scaledrone.com](https://www.scaledrone.com).
+
+## Provisioning the add-on
+
+ScaleDrone can be attached to a Heroku application via the  CLI:
+
+> callout
+> A list of all plans available can be found [here](http://addons.heroku.com/scaledrone).
+
+```term
+$ heroku addons:add scaledrone
+-----> Adding ScaleDrone to sharp-mountain-4005... done, v18 (free)
+```
+
+Once ScaleDrone has been added `SCALEDRONE_CHANNEL_ID` and `SCALEDRONE_CHANNEL_SECRET` settings will be available in the app configuration and will contain the channel's ID and channel's secret. This can be confirmed using the `heroku config:get` command.
+
+```term
+$ heroku config:get SCALEDRONE_CHANNEL_ID
+YOUR_PUBLIC_CHANNEL_ID
+
+$ heroku config:get SCALEDRONE_CHANNEL_SECRET
+YOUR_PRIVATE_CHANNEL_SECRET
+```
+
+After installing ScaleDrone the application should be configured to fully integrate with the add-on.
+
+## Local setup
+
+### Environment setup
+
+After provisioning the add-on it's necessary to locally replicate the config vars so your development environment can operate against the service.
+
+> callout
+> Though less portable it's also possible to set local environment variables using `export ADDON-CONFIG-NAME=value`.
+
+Use [Foreman](config-vars#local-setup) to configure, run and manage process types specified in your app's [Procfile](procfile). Foreman reads configuration variables from an .env file. Use the following command to add the values retrieved from heroku config to `.env`.
+
+```term
+$ heroku config -s >> .env
+$ more .env
+```
+
+> warning
+> Credentials and other sensitive configuration values should not be committed to source-control. In Git exclude the .env file with: `echo .env >> .gitignore`.
+
+## Using the API
+
+### JavaScript API
 
 To include the ScaleDrone client library in your website, add a script tag to the `<head>` section of your HTML file.
 
@@ -8,25 +55,9 @@ To include the ScaleDrone client library in your website, add a script tag to th
 <script type='text/javascript' src='https://api2.scaledrone.com/assets/scaledrone.min.js'></script>
 ```
 >warning
->Do not host this file yourself
+>Do not host this file yourself! You will not be notified when this file changes.
 
-## Variables
-
-Heroku gives you access to two variables:
-
-* `SCALEDRONE_CHANNEL_ID` - this is your channels public ID
-* `SCALEDRONE_CHANNEL_SECRET` - this is a secret key you use to create access tokens for clients and servers
-
-You can access them as environment variables from Heroku or from the Heroku toolbelt with:
-
-```term
-$ heroku config:get SCALEDRONE_CHANNEL_ID
-$ heroku config:get SCALEDRONE_CHANNEL_SECRET
-```
-
-## JavaScript Client
-
-To subscribe to messages you can use the JavaScript API. If you are serving the client as a template you can replace `'CHANNEL_ID'` with `SCALEDRONE_CHANNEL_ID `enviroment variable.
+To subscribe to messages you can use the JavaScript API. If you are serving the client as a template you should replace `'CHANNEL_ID'` with `SCALEDRONE_CHANNEL_ID `enviroment variable.
 
 ```javascript
 var drone = new ScaleDrone('CHANNEL_ID');
@@ -54,7 +85,9 @@ drone.on('error', function (error) {
 });
 ```
 
-## REST Pushing
+This code opens a new connection to ScaleDrone. Subscribes to messages from the room `main` and sends a message to the room `main` saying 'hey!'.
+
+### REST API
 
 The REST API lets you push data to rooms as HTTPS POST requests.
 
@@ -78,21 +111,25 @@ Data: {"hello": "from REST"}
 | 200  | Everything went OK, the message was published |
 | 400+ | Error, response message gives a more detailed error message |
 
-## Authentication
+### Authentication
+
+By default ScaleDrone apps don't require authentication. This can be turned on from ScaleDrone's dashboard that you can access from your app's addons page.
+
+#### JSON Web Token
 
 Both JavaScript and REST connections can be authenticated using [JSON Web Tokens](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html) (JWT). The token is encoded using your channel's secret.
 There are JWT libraries for most programming languages and it is relatively easy to implement yourself.
 
-### JSON Web Token
+##### JWT Header
 
-#### JWT Header
 [JSON Web Tokens](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html) (JWT) has to be encoded with HMAC using SHA-256 (HS256). The decoded header always looks like this:
 
 ```json
 {"alg": "HS256", "typ": "JWT"}
 ```
-#### JWT Payload
-JWT's payload uses the common 'ext' JWT claim and some ScaleDrone's specific claims. An example decoded JWT payload looks like this:
+
+##### JWT Payload
+JWT's payload uses the common `ext` JWT claim and some ScaleDrone's specific claims. An example decoded JWT payload looks like this:
 
 ```json
 {
@@ -121,10 +158,10 @@ JWT's payload uses the common 'ext' JWT claim and some ScaleDrone's specific cla
 | permissions | ✔        | A regular expression hash that defined permissions to publish and subscribe to rooms |
 | exp         | ✔        | Unix timestamp expiration time after which the token will not be accepted for processing |
 
-### Permissions
+#### Permissions
 
 The permissions claim is used to define which rooms the authenticated user can subscribe or publish to. It is possbile to define very detailed permission rules using [regular expressions](http://regexone.com/).
-ScaleDrone uses the popular Perl regular expressions syntax used by most popular programming languages.
+ScaleDrone uses the popular Perl regular expressions syntax used by most programming languages.
 
 **Example permissions:**
 
@@ -146,9 +183,9 @@ This allows the user to publish and subscribe to all rooms (regex: `/.*/`) besid
 Otherwise it will match any room that contains the string 'main'.
 </div>
 
-## JavaScript Authentication
+### JavaScript Authentication
 
-After connecting to ScaleDrone and catching the 'open' event the client can authenticate with a JWT (that the user got from your web server). ClientId can can be accessed from drone.clientId.
+After connecting to ScaleDrone and catching the 'open' event the client can authenticate with a JWT (that the user got from your web server). `ClientId` can can be accessed from `drone.clientId`.
 
 ```javascript
 var drone = new ScaleDrone('CHANNEL_ID');
@@ -166,7 +203,7 @@ drone.on('authenticate', function (error) {
 });
 ```
 
-## REST Authentication
+### REST Authentication
 
 REST requests are authenticated using a JSON Web Token set as a header's Bearer token: `Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...`
 
@@ -184,11 +221,7 @@ Headers:
 ```
 
 >warning
->Don't set a client claim for REST API's JWT
-
-## Read more
-
-You can find more documentation and tutorials at [ScaleDrone's documentation](https://www.scaledrone.com/docs).
+>Don't set a client claim for REST API's JWT.
 
 ## Examples
 
@@ -197,3 +230,51 @@ You can find more documentation and tutorials at [ScaleDrone's documentation](ht
 * [PHP Push](http://runnable.com/VDfTR_CSFyNpVv79/scaledrone-php-push-example)
 * [PHP Authentication](https://github.com/ScaleDrone/scaledrone-php)
 * [Node.js Authentication (using Express)](https://github.com/ScaleDrone/scaledrone-express-jwt-demo)
+
+## Dashboard
+
+The ScaleDrone dashboard allows you to see the current amount of users, see the history of your of concurrent users, access and change channel's variables.
+
+The dashboard can be accessed via the CLI:
+
+```term
+$ heroku addons:open scaledrone
+Opening ScaleDrone for sharp-mountain-4005â€¦
+```
+
+or by visiting the [Heroku apps web interface](http://heroku.com/myapps) and selecting the application in question. Select ADDON-NAME from the Add-ons menu.
+
+## Migrating between plans
+
+> note
+> Application owners should carefully manage the migration timing to ensure proper application function during the migration process.
+
+Use the `heroku addons:upgrade` command to migrate to a new plan.
+
+```term
+$ heroku addons:upgrade scaledrone:large
+-----> Upgrading ScaleDrone:small to sharp-mountain-4005... done, v18 ($130/mo)
+       Your plan has been updated to: scaledrone:large
+```
+
+## Removing the add-on
+
+ScaleDrone can be removed via the CLI.
+
+> warning
+> This will destroy all associated data and cannot be undone!
+
+```term
+$ heroku addons:remove scaledrone
+-----> Removing ScaleDrone from sharp-mountain-4005... done, v20 (free)
+```
+
+Before removing ADDON-NAME a data export can be performed by [[describe steps if export is available]].
+
+## Support
+
+All ADDON-NAME support and runtime issues should be submitted via on of the [Heroku Support channels](support-channels). Any non-support related issues or product feedback is welcome at [ScaleDrone contact page](https://www.scaledrone.com/contact).
+
+## Read more
+
+You can find more documentation and tutorials at [ScaleDrone's documentation](https://www.scaledrone.com/docs).
