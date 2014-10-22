@@ -33,7 +33,7 @@ After installing ScaleDrone the application should be configured to fully integr
 After provisioning the add-on it's necessary to locally replicate the config vars so your development environment can operate against the service.
 
 > callout
-> Though less portable it's also possible to set local environment variables using `export ADDON-CONFIG-NAME=value`.
+> Though less portable it's also possible to set local environment variables using `export SCALEDRONE_CHANNEL_ID=value` and `export SCALEDRONE_CHANNEL_SECRET=value`.
 
 Use [Foreman](config-vars#local-setup) to configure, run and manage process types specified in your app's [Procfile](procfile). Foreman reads configuration variables from an .env file. Use the following command to add the values retrieved from heroku config to `.env`.
 
@@ -242,7 +242,7 @@ $ heroku addons:open scaledrone
 Opening ScaleDrone for sharp-mountain-4005â€¦
 ```
 
-or by visiting the [Heroku apps web interface](http://heroku.com/myapps) and selecting the application in question. Select ADDON-NAME from the Add-ons menu.
+or by visiting the [Heroku apps web interface](http://heroku.com/myapps) and selecting the application in question. Select ScaleDrone from the Add-ons menu.
 
 ## Migrating between plans
 
@@ -269,11 +269,9 @@ $ heroku addons:remove scaledrone
 -----> Removing ScaleDrone from sharp-mountain-4005... done, v20 (free)
 ```
 
-Before removing ADDON-NAME a data export can be performed by [[describe steps if export is available]].
-
 ## Support
 
-All ADDON-NAME support and runtime issues should be submitted via on of the [Heroku Support channels](support-channels). Any non-support related issues or product feedback is welcome at [ScaleDrone contact page](https://www.scaledrone.com/contact).
+All ScaleDrone support and runtime issues should be submitted via on of the [Heroku Support channels](support-channels). Any non-support related issues or product feedback is welcome at [ScaleDrone contact page](https://www.scaledrone.com/contact).
 
 ## Read more
 
