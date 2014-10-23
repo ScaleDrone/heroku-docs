@@ -1,4 +1,4 @@
-[ScaleDrone](http://addons.heroku.com/scaledrone) is the easiest way of adding real-time pushing capabilities to your app. ScaleDrone offers JavaScript and REST clients, so it doesn't matter which language your app uses.
+[ScaleDrone](http://addons.heroku.com/scaledrone) is the easiest way to add real-time pushing capabilities to your app. ScaleDrone offers JavaScript and REST clients, so it doesn't matter which language your app uses.
 
 You can also sign up and use the service from [www.scaledrone.com](https://www.scaledrone.com).
 
@@ -57,7 +57,7 @@ To include the ScaleDrone client library in your website, add a script tag to th
 >warning
 >Do not host this file yourself! You will not be notified when this file changes.
 
-To subscribe to messages you can use the JavaScript API. If you are serving the client as a template you should replace `'CHANNEL_ID'` with `SCALEDRONE_CHANNEL_ID `enviroment variable.
+To subscribe to messages you can use the JavaScript API. If you are serving the client as a template you should replace `'CHANNEL_ID'` with `SCALEDRONE_CHANNEL_ID` enviroment variable.
 
 ```javascript
 var drone = new ScaleDrone('CHANNEL_ID');
@@ -85,7 +85,7 @@ drone.on('error', function (error) {
 });
 ```
 
-This code opens a new connection to ScaleDrone. Subscribes to messages from the room `main` and sends a message to the room `main` saying 'hey!'.
+This code opens a new connection to ScaleDrone, subscribes to messages from the room `main` and then sends a message to the room `main` saying 'hey!'.
 
 ### REST API
 
@@ -101,19 +101,19 @@ Data: {"hello": "from REST"}
 
 | Header        | Required | Value                        | Description |
 | ------------- |:--------:| ---------------------------- | ----------- |
-| Content-Type  | ✗        | application/json             | Set content type to JSON if you want to receive data as JavaScript objects |
-| Authorization | ✗ you can also make unauthorized request      | Bearer eyJ0eXAiOiJKV1QiLC... | Read about the Authorization header at the [authentication documentation](#rest-authentication) |
+| Content-Type  | Not required        | application/json             | Set content type to JSON if you want to receive data as JavaScript objects |
+| Authorization | Not required. _Unauthorized requests are permitted_      | Bearer eyJ0eXAiOiJKV1QiLC... | Read about the Authorization header in the [authentication documentation](#rest-authentication) |
 
 **Response codes:**
 
 | Code | Description |
 | ---- | ----------- |
-| 200  | Everything went OK, the message was published |
-| 400+ | Error, response message gives a more detailed error message |
+| 200  | Everything went OK. The message was published. |
+| 400+ | Error. The response message gives a more detailed error message. |
 
 ### Authentication
 
-By default ScaleDrone apps don't require authentication. This can be turned on from ScaleDrone's dashboard that you can access from your app's addons page.
+By default, ScaleDrone apps don't require authentication. This can be turned on from ScaleDrone's dashboard that you can access from your app's addons page.
 
 #### JSON Web Token
 
@@ -129,7 +129,7 @@ There are JWT libraries for most programming languages and it is relatively easy
 ```
 
 ##### JWT Payload
-JWT's payload uses the common `ext` JWT claim and some ScaleDrone's specific claims. An example decoded JWT payload looks like this:
+JWT's payload uses the common `exp` JWT claim and some of ScaleDrone's specific claims. An example decoded JWT payload looks like this:
 
 ```json
 {
@@ -153,9 +153,9 @@ JWT's payload uses the common `ext` JWT claim and some ScaleDrone's specific cla
 
 | Claim       | Required | Description |
 | ----------- |:--------:| ----------- |
-| client      | ✗ (not required for REST API) | The client connection's ID provided by the JavaScript client after the 'open' event |
+| client      | Not required for REST API | The client connection's ID provided by the JavaScript client after the 'open' event |
 | channel     | ✔        | Channel's ID that the token is for |
-| permissions | ✔        | A regular expression hash that defined permissions to publish and subscribe to rooms |
+| permissions | ✔        | A regular expression hash that defines permissions of the connection |
 | exp         | ✔        | Unix timestamp expiration time after which the token will not be accepted for processing |
 
 #### Permissions
@@ -185,7 +185,7 @@ Otherwise it will match any room that contains the string 'main'.
 
 ### JavaScript Authentication
 
-After connecting to ScaleDrone and catching the 'open' event the client can authenticate with a JWT (that the user got from your web server). `ClientId` can can be accessed from `drone.clientId`.
+After connecting to ScaleDrone and receiving the 'open' event, the client can authenticate with a JWT (that the user got from your web server). `ClientId` can be accessed from `drone.clientId`.
 
 ```javascript
 var drone = new ScaleDrone('CHANNEL_ID');
@@ -271,8 +271,8 @@ $ heroku addons:remove scaledrone
 
 ## Support
 
-All ScaleDrone support and runtime issues should be submitted via on of the [Heroku Support channels](support-channels). Any non-support related issues or product feedback is welcome at [ScaleDrone contact page](https://www.scaledrone.com/contact).
+All ScaleDrone support and runtime issues should be submitted via on of the [Heroku Support channels](support-channels). Any non-support related issues or product feedback is welcome on the [ScaleDrone contact page](https://www.scaledrone.com/contact).
 
 ## Read more
 
-You can find more documentation and tutorials at [ScaleDrone's documentation](https://www.scaledrone.com/docs).
+You can find more documentation and tutorials in the [ScaleDrone documentation](https://www.scaledrone.com/docs).
